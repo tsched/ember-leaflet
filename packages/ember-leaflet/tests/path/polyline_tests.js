@@ -3,6 +3,12 @@ require('ember-leaflet/~tests/test_helper');
 var content, polyline, PolylineClass, view, 
   locations = window.locations;
 
+function addPolylineEventListener(polyline) {
+  polyline.on('locationsChanged', function() {
+    ok(true, "location has been triggered");
+  });
+}
+
 module("EmberLeaflet.PolylineLayer", {
   setup: function() {
     content = Ember.A([locations.chicago, locations.sf, locations.nyc]);
@@ -79,4 +85,23 @@ test("nullify item in content updates polyline", function() {
   equal(polyline.get('locations.length'), 2);
   equal(polyline._layer.getLatLngs().length, 2);
 });
+  
+test("add item to content triggers 'locationsChanged' event", function() {
+  addPolylineEventListener(polyline);
+  content.pushObject(locations.paris);
+});
 
+test("remove item from content triggers 'locationsChanged' event", function() {
+  addPolylineEventListener(polyline);
+  content.popObject();
+});
+
+test("replace item in content triggers 'locationsChanged' event", function() {
+  addPolylineEventListener(polyline);
+  content.replace(2, 1, locations.paris);
+});
+
+test("nullify item in content triggers 'locationsChanged' event", function() {
+  addPolylineEventListener(polyline);
+  content.replace(2, 1, null);
+});

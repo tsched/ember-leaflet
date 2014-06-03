@@ -8,7 +8,7 @@ var get = Ember.get;
   @namespace EmberLeaflet
   @extends EmberLeaflet.ArrayPathLayer
 */
-EmberLeaflet.PolylineLayer = EmberLeaflet.ArrayPathLayer.extend({
+EmberLeaflet.PolylineLayer = EmberLeaflet.ArrayPathLayer.extend(Ember.Evented, {
   options: {},
 
   events: ['click', 'dblclick', 'mousedown', 'mouseover', 'mouseout',
@@ -20,7 +20,8 @@ EmberLeaflet.PolylineLayer = EmberLeaflet.ArrayPathLayer.extend({
 
   locationsDidChange: Ember.observer(function() {
     if(!this._layer) { return; }
-    this._layer.setLatLngs(get(this, 'locations'));    
+    this._layer.setLatLngs(get(this, 'locations'));
+    this.trigger('locationsChanged');  
   }, 'locations')
 });
 

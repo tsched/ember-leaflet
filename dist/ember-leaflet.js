@@ -1,4 +1,5 @@
-// Last commit: 09a16d5 (2014-04-23 18:30:29 -0700)
+// Version: v0.5.0-3-g3d5acb6
+// Last commit: 3d5acb6 (2014-05-06 07:37:27 -0400)
 
 
 (function() {
@@ -654,7 +655,7 @@ EmberLeaflet.PopupMixin = Ember.Mixin.create({
 
   _createPopup: function() {
     this.willCreatePopup();
-    this._popup = L.popup(this.get('popupOptions'));
+    this._popup = L.popup(this.get('popupOptions'), this._layer);
     this.didCreatePopup();
   },
 
@@ -1302,7 +1303,7 @@ var get = Ember.get;
   @namespace EmberLeaflet
   @extends EmberLeaflet.ArrayPathLayer
 */
-EmberLeaflet.PolylineLayer = EmberLeaflet.ArrayPathLayer.extend({
+EmberLeaflet.PolylineLayer = EmberLeaflet.ArrayPathLayer.extend(Ember.Evented, {
   options: {},
 
   events: ['click', 'dblclick', 'mousedown', 'mouseover', 'mouseout',
@@ -1314,7 +1315,8 @@ EmberLeaflet.PolylineLayer = EmberLeaflet.ArrayPathLayer.extend({
 
   locationsDidChange: Ember.observer(function() {
     if(!this._layer) { return; }
-    this._layer.setLatLngs(get(this, 'locations'));    
+    this._layer.setLatLngs(get(this, 'locations'));
+    this.trigger('locationsChanged');  
   }, 'locations')
 });
 
